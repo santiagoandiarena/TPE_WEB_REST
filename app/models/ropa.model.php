@@ -47,6 +47,14 @@ class RopaModel
         return $prendas;
     }
 
+    public function obtenerIdCategoriaPorNombre($nombreCategoria)
+    {
+        $query = $this->db->prepare('SELECT ID_categoria FROM categoria WHERE nombre = ?');
+        $query->execute([$nombreCategoria]);
+        return $query->fetchColumn(); // Retorna el ID_categoria si existe, o `false` si no
+    }
+
+
     //funcion para verificar que la categoria ingresada exista
     public function existeCategoria($ID_categoria)
     {

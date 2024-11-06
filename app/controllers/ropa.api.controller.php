@@ -19,25 +19,22 @@ class RopaApiController
 
     public function obtenerTodas($req, $res)
     {
+        $ordenarPor = $req->query->ordenarPor ?? false;
 
-        $ordenarPor = false;
-        if (isset($req->query->ordenarPor)) {
-            $ordenarPor = $req->query->ordenarPor;
-        }
-        
+        $categoria = $req->query->categoria ?? null;
         $filtrarCategoria = null;
-        if (isset($req->query->ID_categoria)) {
-            $filtrarCategoria = $req->query->ID_categoria;
-        }
 
-        //verifica si ID_categoria existe
-        if ($filtrarCategoria && !$this->model->existeCategoria($filtrarCategoria)) {
-            return $this->view->response("La categoría especificada no existe", 400);
+        if ($categoria) {
+            $filtrarCategoria = $this->model->obtenerIdCategoriaPorNombre($categoria);
+            if (!$filtrarCategoria) {
+                return $this->view->response("La categoría especificada no existe", 400);
+            }
         }
 
         $prendas = $this->model->obtenerPrendas($ordenarPor, $filtrarCategoria);
         $this->view->response($prendas);
     }
+
 
 
 
@@ -80,23 +77,29 @@ class RopaApiController
         $nombre = $req->body->nombre;
         $valor = $req->body->valor;
         $descripcion = $req->body->descripcion;
-        $ID_categoria = $req->body->ID_categoria;
+        $categoriaNombre = $req->body->categoria; // Nombre de la categoría
         $imagen = $req->body->imagen;
 
-
-        if (empty($nombre) || empty($valor) || empty($descripcion) || empty($ID_categoria) || empty($imagen)) {
+        if (empty($nombre) || empty($valor) || empty($descripcion) || empty($categoriaNombre) || empty($imagen)) {
             return $this->view->response("Faltan completar datos", 400);
+        }
+
+        // Obtener el ID de la categoría a partir de su nombre
+        $ID_categoria = $this->model->obtenerIdCategoriaPorNombre($categoriaNombre);
+        if (!$ID_categoria) {
+            return $this->view->response("La categoría especificada no existe", 400);
         }
 
         $id = $this->model->agregararticulo($nombre, $valor, $descripcion, $ID_categoria, $imagen);
 
         if (!$id) {
-            $this->view->response("Error al agregar la tarea", 500);
+            return $this->view->response("Error al agregar la prenda", 500);
         }
 
         $prenda = $this->model->obtenerPrenda($id);
         return $this->view->response($prenda, 201);
     }
+
 
 
 
@@ -113,11 +116,17 @@ class RopaApiController
         $nombre = $req->body->nombre;
         $valor = $req->body->valor;
         $descripcion = $req->body->descripcion;
-        $ID_categoria = $req->body->ID_categoria;
+        $categoriaNombre = $req->body->categoria; // Nombre de la categoría
         $imagen = $req->body->imagen;
 
-        if (empty($nombre) || empty($valor) || empty($descripcion) || empty($ID_categoria) || empty($imagen)) {
+        if (empty($nombre) || empty($valor) || empty($descripcion) || empty($categoriaNombre) || empty($imagen)) {
             return $this->view->response("Faltan completar datos", 400);
+        }
+
+        // Obtener el ID de la categoría a partir de su nombre
+        $ID_categoria = $this->model->obtenerIdCategoriaPorNombre($categoriaNombre);
+        if (!$ID_categoria) {
+            return $this->view->response("La categoría especificada no existe", 400);
         }
 
         $this->model->editarArticulo($nombre, $valor, $descripcion, $ID_categoria, $imagen, $id);
@@ -125,7 +134,4 @@ class RopaApiController
         $prenda = $this->model->obtenerPrenda($id);
         return $this->view->response($prenda, 200);
     }
-
-
-
 }
