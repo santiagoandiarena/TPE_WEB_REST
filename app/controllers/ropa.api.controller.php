@@ -31,7 +31,17 @@ class RopaApiController
             }
         }
 
-        $prendas = $this->model->obtenerPrendas($ordenarPor, $filtrarCategoria);
+        $paginas = isset($_GET['_page']) ? (int)$_GET['_page'] : 1; // Página predeterminada: 1
+        $limite = isset($_GET['_limit']) ? (int)$_GET['_limit'] : 3;  //cantidad de prendas predeterminadas.
+
+        if ($paginas < 1) {
+            return $this->view->response("La cantidad de paginas debe ser 1 o mayor", 400);
+        }
+    
+       
+    
+
+        $prendas = $this->model->obtenerPrendas($ordenarPor, $filtrarCategoria,$paginas,$limite);
         $this->view->response($prendas);
     }
 
@@ -134,4 +144,6 @@ class RopaApiController
         $prenda = $this->model->obtenerPrenda($id);
         return $this->view->response($prenda, 200);
     }
+
+ 
 }

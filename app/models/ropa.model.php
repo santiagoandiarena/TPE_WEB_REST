@@ -11,9 +11,11 @@ class RopaModel
 
     //METODOS
 
-    public function obtenerPrendas($ordenarPor = false, $filtrarCategoria = false)
+    public function obtenerPrendas($ordenarPor = false, $filtrarCategoria = false, $paginas,$limite)
     {
-        $sql = 'SELECT articulo.*, categoria.nombre AS categoria_nombre FROM articulo JOIN categoria ON articulo.ID_categoria = categoria.ID_categoria';
+
+        $inicio = ($paginas - 1) * $limite; // inicia la pagina 
+        $sql = ( "SELECT articulo.*, categoria.nombre AS categoria_nombre FROM articulo JOIN categoria ON articulo.ID_categoria = categoria.ID_categoria LIMIT $inicio, $limite   ");
 
         if ($filtrarCategoria) {
             $sql .= ' WHERE articulo.ID_categoria = ' . intval($filtrarCategoria);
@@ -73,6 +75,7 @@ class RopaModel
         FROM articulo 
         JOIN categoria ON articulo.ID_categoria = categoria.ID_categoria 
         WHERE ID_articulo = ?
+       
     ');
         $query->execute([$id]);
 
@@ -101,4 +104,7 @@ class RopaModel
         $query = $this->db->prepare("UPDATE articulo SET nombre = ?, valor = ?, descripcion = ?, ID_categoria = ? , Imagen = ? WHERE ID_articulo = ?");
         $query->execute([$nombre, $valor, $descripcion, $id_categoria, $imagen, $id]);
     }
+
+    
+   
 }
