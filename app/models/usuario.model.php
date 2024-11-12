@@ -1,6 +1,5 @@
 <?php
 
-require_once 'app/models/model.php';
 
 
 class UsuarioModel  {
@@ -10,11 +9,14 @@ class UsuarioModel  {
      }
  
     public function obtenerUsuarioPorNombre($nombreUsuario) {    
+
+        
         $query = $this->db->prepare("SELECT * FROM usuario WHERE nombreUsuario = ?");
         $query->execute([$nombreUsuario]);
     
-        $user = $query->fetch(PDO::FETCH_OBJ);
+        $usuario = $query->fetch(PDO::FETCH_OBJ);
+       
     
-        return $user;
+        return $usuario;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 require_once './app/models/ropa.model.php';
 require_once './app/views/json.view.php';
-
+require_once 'middlewares/jwt.auth.middleware.php';
 class RopaApiController
 {
     private $model;
@@ -31,17 +31,17 @@ class RopaApiController
             }
         }
 
-        $paginas = isset($_GET['_page']) ? (int)$_GET['_page'] : 1; // Página predeterminada: 1
-        $limite = isset($_GET['_limit']) ? (int)$_GET['_limit'] : 3;  //cantidad de prendas predeterminadas.
+        $paginas = isset($_GET['_page']) ? (int) $_GET['_page'] : 1; // Página predeterminada: 1
+        $limite = isset($_GET['_limit']) ? (int) $_GET['_limit'] : 3;  //cantidad de prendas predeterminadas.
 
         if ($paginas < 1) {
             return $this->view->response("La cantidad de paginas debe ser 1 o mayor", 400);
         }
-    
-       
-    
 
-        $prendas = $this->model->obtenerPrendas($ordenarPor, $filtrarCategoria,$paginas,$limite);
+
+
+
+        $prendas = $this->model->obtenerPrendas($ordenarPor, $filtrarCategoria, $paginas, $limite);
         $this->view->response($prendas);
     }
 
@@ -55,7 +55,7 @@ class RopaApiController
         $prenda = $this->model->obtenerPrenda($id); // devuelve una única prenda
 
         if (!$prenda) {
-            return  $this->view->response('No existe la prenda', 404);
+            return $this->view->response('No existe la prenda', 404);
         }
 
         //$categorias = $this->modelCategoria->obtenercategorias();
@@ -84,6 +84,10 @@ class RopaApiController
 
     public function agregar($req, $res)
     {
+
+        if (!$res->user) {
+            return $this->view->response("No estas autorizado", 401);
+        }
         $nombre = $req->body->nombre;
         $valor = $req->body->valor;
         $descripcion = $req->body->descripcion;
@@ -115,6 +119,9 @@ class RopaApiController
 
     public function editar($req, $res)
     {
+        if (!$res->user) {
+            return $this->view->response("No estas autorizado", 401);
+        }
         $id = $req->params->id;
 
         $prenda = $this->model->obtenerPrenda($id);
@@ -145,5 +152,5 @@ class RopaApiController
         return $this->view->response($prenda, 200);
     }
 
- 
+
 }
