@@ -34,3 +34,16 @@ Endpoints:
         -https://localhost/web2/TPE_WEB_REST/api/prendas?ordenarPor=valor
         -https://localhost/web2/TPE_WEB_REST/api/prendas?ordenarPor=ID_categoria
         -https://localhost/web2/TPE_WEB_REST/api/prendas?ordenarPor=descripcion
+
+    -Obtener Token:
+        -https://localhost/web2/TPE_WEB_REST/api/usuario/token (metodo GET)
+        -Auth => basic 
+            -username: webadmin
+            -password: admin
+        -Tiempo de vida del token: 5 minutos
+    
+    -Paginado: https://localhost/web2/TPE_WEB_REST/api/prendas?_limit=3&_page=1
+        -limite prendas predeterminado: 3
+
+
+     🐷

@@ -52,7 +52,7 @@ class UserApiController
             'nombreUsuario' => $usuario->nombreUsuario,
             'role' => 'admin',
             'iat' => time(),
-            'exp' => time() + 60,
+            'exp' => time() + 350,
             'Saludo' => 'Hola',
         ));
         return $this->view->response($token);
