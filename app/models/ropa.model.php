@@ -11,43 +11,48 @@ class RopaModel
 
     //METODOS
 
-    public function obtenerPrendas($ordenarPor = false, $filtrarCategoria = false, $paginas,$limite)
+    public function obtenerPrendas($ordenarPor = false, $filtrarCategoria = false, $paginas, $limite)
     {
-
         $inicio = ($paginas - 1) * $limite; // inicia la pagina 
-        $sql = ( "SELECT articulo.*, categoria.nombre AS categoria_nombre FROM articulo JOIN categoria ON articulo.ID_categoria = categoria.ID_categoria LIMIT $inicio, $limite   ");
+        $sql = "SELECT articulo.*, categoria.nombre AS categoria_nombre 
+            FROM articulo 
+            JOIN categoria ON articulo.ID_categoria = categoria.ID_categoria";
 
+        // Aplicar filtro de categoría si está definido
         if ($filtrarCategoria) {
             $sql .= ' WHERE articulo.ID_categoria = ' . intval($filtrarCategoria);
         }
 
+        // Aplicar orden si está definido
         if ($ordenarPor) {
             switch ($ordenarPor) {
                 case 'nombre':
-                    $sql .= ' ORDER BY nombre';
+                    $sql .= ' ORDER BY articulo.nombre';
                     break;
                 case 'valor':
-                    $sql .= ' ORDER BY valor';
+                    $sql .= ' ORDER BY articulo.valor';
                     break;
                 case 'descripcion':
-                    $sql .= ' ORDER BY descripcion';
+                    $sql .= ' ORDER BY articulo.descripcion';
                     break;
                 case 'ID_categoria':
-                    $sql .= ' ORDER BY ID_categoria';
+                    $sql .= ' ORDER BY articulo.ID_categoria';
                     break;
                 case 'imagen':
-                    $sql .= ' ORDER BY imagen';
+                    $sql .= ' ORDER BY articulo.imagen';
                     break;
             }
         }
 
+        // Agregar LIMIT al final
+        $sql .= " LIMIT $inicio, $limite";
+
         $query = $this->db->prepare($sql);
         $query->execute();
 
-        $prendas = $query->fetchAll(PDO::FETCH_OBJ);
-
-        return $prendas;
+        return $query->fetchAll(PDO::FETCH_OBJ);
     }
+
 
     public function obtenerIdCategoriaPorNombre($nombreCategoria)
     {
@@ -104,7 +109,4 @@ class RopaModel
         $query = $this->db->prepare("UPDATE articulo SET nombre = ?, valor = ?, descripcion = ?, ID_categoria = ? , Imagen = ? WHERE ID_articulo = ?");
         $query->execute([$nombre, $valor, $descripcion, $id_categoria, $imagen, $id]);
     }
-
-    
-   
 }

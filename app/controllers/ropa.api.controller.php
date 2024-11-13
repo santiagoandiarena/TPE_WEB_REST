@@ -12,7 +12,6 @@ class RopaApiController
     {
         $this->model = new RopaModel();
         $this->view = new JsonView();
-        //$this->modelCategoria = new obtenercategorias();
     }
 
 
@@ -58,9 +57,8 @@ class RopaApiController
             return $this->view->response('No existe la prenda', 404);
         }
 
-        //$categorias = $this->modelCategoria->obtenercategorias();
 
-        $this->view->response($prenda); //, $categorias); // Pasa la primera (y única) prenda
+        $this->view->response($prenda); 
     }
 
 
