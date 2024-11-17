@@ -74,7 +74,7 @@ class RopaApiController
 
         $this->model->eliminarPrenda($id);
 
-        return $this->view->response("la tarea se elimino con exito");
+        return $this->view->response("la prenda se elimino con exito");
     }
 
 
