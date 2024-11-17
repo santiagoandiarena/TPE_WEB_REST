@@ -11,37 +11,24 @@ class RopaModel
 
     //METODOS
 
-    public function obtenerPrendas($ordenarPor = false, $filtrarCategoria = false, $paginas, $limite)
+    public function obtenerPrendas($ordenarPor = false, $filtrarCategoria = false, $paginas, $limite, $orden = 'ASC')
     {
-        $inicio = ($paginas - 1) * $limite; // inicia la pagina 
+        $inicio = ($paginas - 1) * $limite; // inicia la página
         $sql = "SELECT articulo.*, categoria.nombre AS categoria_nombre 
             FROM articulo 
             JOIN categoria ON articulo.ID_categoria = categoria.ID_categoria";
 
-        // Aplicar filtro de categoría si está definido
         if ($filtrarCategoria) {
             $sql .= ' WHERE articulo.ID_categoria = ' . intval($filtrarCategoria);
         }
 
         // Aplicar orden si está definido
         if ($ordenarPor) {
-            switch ($ordenarPor) {
-                case 'nombre':
-                    $sql .= ' ORDER BY articulo.nombre';
-                    break;
-                case 'valor':
-                    $sql .= ' ORDER BY articulo.valor';
-                    break;
-                case 'descripcion':
-                    $sql .= ' ORDER BY articulo.descripcion';
-                    break;
-                case 'ID_categoria':
-                    $sql .= ' ORDER BY articulo.ID_categoria';
-                    break;
-                case 'imagen':
-                    $sql .= ' ORDER BY articulo.imagen';
-                    break;
+            $orden = strtoupper($orden); // Convertir a mayúsculas para prevenir errores
+            if (!in_array($orden, ['ASC', 'DESC'])) {
+                $orden = 'ASC'; // Valor predeterminado
             }
+            $sql .= " ORDER BY articulo.$ordenarPor $orden";
         }
 
         // Agregar LIMIT al final
@@ -52,6 +39,7 @@ class RopaModel
 
         return $query->fetchAll(PDO::FETCH_OBJ);
     }
+
 
 
     public function obtenerIdCategoriaPorNombre($nombreCategoria)

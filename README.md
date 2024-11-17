@@ -35,6 +35,9 @@ Endpoints:
         -https://localhost/web2/TPE_WEB_REST/api/prendas?ordenarPor=ID_categoria
         -https://localhost/web2/TPE_WEB_REST/api/prendas?ordenarPor=descripcion
 
+        -Por defecto se ordenan ascendentemente, si quiero ordenar descendentemente:
+            -https://localhost/web2/TPE_WEB_REST/api/prendas?ordenarPor=valor&orden=DESC
+
     -Obtener Token:
         -https://localhost/web2/TPE_WEB_REST/api/usuario/token (metodo GET)
         -Auth => basic 
