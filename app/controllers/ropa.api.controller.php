@@ -42,10 +42,6 @@ class RopaApiController
         $this->view->response($prendas);
     }
 
-
-
-
-
     public function obtener($req, $res)
     {
         $id = $req->params->id;
@@ -59,7 +55,6 @@ class RopaApiController
 
         $this->view->response($prenda);
     }
-
 
     public function eliminar($req, $res)
     {
@@ -76,24 +71,22 @@ class RopaApiController
         return $this->view->response("la prenda se elimino con exito");
     }
 
-
-
-
     public function agregar($req, $res)
     {
 
         if (!$res->user) {
             return $this->view->response("No estas autorizado", 401);
         }
+
+        if (empty($req->body->nombre) || empty($req->body->valor) || empty($req->body->descripcion) || empty($req->body->categoria) || empty($req->body->imagen)) {
+            return $this->view->response("Faltan completar datos", 400);
+        }
+
         $nombre = $req->body->nombre;
         $valor = $req->body->valor;
         $descripcion = $req->body->descripcion;
-        $categoriaNombre = $req->body->categoria; // Nombre de la categoría
+        $categoriaNombre = $req->body->categoria;
         $imagen = $req->body->imagen;
-
-        if (empty($nombre) || empty($valor) || empty($descripcion) || empty($categoriaNombre) || empty($imagen)) {
-            return $this->view->response("Faltan completar datos", 400);
-        }
 
         // Obtener el ID de la categoría a partir de su nombre
         $ID_categoria = $this->model->obtenerIdCategoriaPorNombre($categoriaNombre);
@@ -111,9 +104,6 @@ class RopaApiController
         return $this->view->response($prenda, 201);
     }
 
-
-
-
     public function editar($req, $res)
     {
         if (!$res->user) {
@@ -127,15 +117,16 @@ class RopaApiController
             return $this->view->response("No existe la prenda", 404);
         }
 
+        if (empty($req->body->nombre) || empty($req->body->valor) || empty($req->body->descripcion) || empty($req->body->categoria) || empty($req->body->imagen)) {
+            return $this->view->response("Faltan completar datos", 400);
+        }
+
         $nombre = $req->body->nombre;
         $valor = $req->body->valor;
         $descripcion = $req->body->descripcion;
-        $categoriaNombre = $req->body->categoria; // Nombre de la categoría
+        $categoriaNombre = $req->body->categoria;
         $imagen = $req->body->imagen;
 
-        if (empty($nombre) || empty($valor) || empty($descripcion) || empty($categoriaNombre) || empty($imagen)) {
-            return $this->view->response("Faltan completar datos", 400);
-        }
 
         // Obtener el ID de la categoría a partir de su nombre
         $ID_categoria = $this->model->obtenerIdCategoriaPorNombre($categoriaNombre);
